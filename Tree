@@ -1,0 +1,33 @@
+1. 判断两个树的叶子节点序列是否相等。
+思路：dfs.分别求出两棵树的叶子值序列，再进行比较。
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        List<Integer> seq1 = new LinkedList<>();
+        List<Integer> seq2 = new LinkedList<>();
+        preOrder(root1, seq1);
+        preOrder(root2, seq2);
+        if (seq1.size() != seq2.size()) return false;
+        for (int i = 0; i < seq1.size(); i++) {
+            if (seq1.get(i) != seq2.get(i)) return false;
+        }
+        return true;
+        
+    }
+    public void preOrder(TreeNode root, List<Integer> seq) {
+        if (root == null) return;
+        if (root.left == null && root.right == null) {
+            seq.add(root.val);
+        }
+        preOrder(root.left, seq);
+        preOrder(root.right, seq);
+    }
+}
