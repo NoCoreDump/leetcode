@@ -31,3 +31,22 @@ class Solution {
         preOrder(root.right, seq);
     }
 }
+
+leetcode104. Maximum Depth of Binary Tree
+思路：递归dfs.根节点的最大深度 = max(左孩子的最大深度，右孩子的最大深度）+ 1；
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        int depth = 1;
+        return depth+Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+}
