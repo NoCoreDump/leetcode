@@ -50,3 +50,80 @@ class Solution {
         return depth+Math.max(maxDepth(root.left), maxDepth(root.right));
     }
 }
+
+1022. Sum of Root To Leaf Binary Numbers
+思路：回溯法。
+用一个list存访问过的节点值，先访问左子树，再访问右子树；
+访问到叶子节点，根据list计算整数值并加到全局变量sum中，然后list删除最后一位（即回退一步）并返回；
+右子树访问完list再删除最后一位（容易忽略）。
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int sum = 0;
+    public int sumRootToLeaf(TreeNode root) {
+
+        if (root == null) return 0;
+        dfs(root, new LinkedList());
+        return sum;
+    }
+    public void dfs(TreeNode root, LinkedList<Integer> list) {
+        if (root == null)return;
+        list.add(root.val);
+        if (root.left == null && root.right == null) {
+            sum += toInt(list);
+            // System.out.println(sum);
+            list.removeLast();
+            return;
+        }
+        dfs(root.left, list);
+        dfs(root.right, list);
+        if (list.size() > 0) list.removeLast();
+    }
+    public int toInt(List<Integer> list) {
+        int i = 0; 
+        int val = 0;
+        for (int n : list) {
+            val = 2 * val + n;
+        }
+        return val;
+    }
+}
+
+669. Trim a Binary Search Tree
+思路：递归dfs.
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+   public TreeNode trimBST(TreeNode root, int L, int R) {
+        if(root == null) return null; // Base case
+        /*
+        * If current node is greater than the Right limit, we will skip this one
+        * try to append its left child to the current position
+        * Or current is smaller than the Left limit, skip this one, and try to 
+        * append its right child to the current position
+        */
+        if(root.val > R) return trimBST(root.left, L, R); 
+        if(root.val < L) return trimBST(root.right, L, R);
+        /*
+        * Recursively, check current node's left child and right child if they are trimBST subtree already.
+        */
+        root.left = trimBST(root.left, L, R);
+        root.right = trimBST(root.right, L, R);
+        // Return the current Node;
+        return root;
+    }
+}
