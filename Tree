@@ -342,3 +342,63 @@ class Solution {
         helper(root.left);
     }
 }
+
+606. Construct String from Binary Tree
+//自己写的，稍微有些发杂
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    StringBuilder sb;
+    public String tree2str(TreeNode t) {
+        if (t == null) return "";
+        sb = new StringBuilder();
+        
+        preOrder(t);
+        return sb.toString();
+    }
+    public void preOrder(TreeNode t) {
+        if(t == null) return ;
+        sb.append(Integer.toString(t.val));
+        if (t.left != null) {
+            sb.append("(");
+            preOrder(t.left);
+            sb.append(")");
+            if (t.right != null) {
+                sb.append("(");
+                preOrder(t.right);
+                sb.append(")");
+            }
+        }
+        if (t.left == null && t.right != null) {
+            sb.append("()(");
+            preOrder(t.right);
+            sb.append(")");
+        }
+        
+    }
+}
+
+//评论里思路更清晰的
+class Solution {
+    public String tree2str(TreeNode t) {
+        if (t == null) {
+            return "";
+        }
+
+        String output = String.valueOf(t.val);
+        if (t.left != null || t.right != null) {
+            output += "(" + tree2str(t.left) + ")";
+            if (t.right != null) {
+                output += "(" + tree2str(t.right) + ")";
+            }
+        }
+        return output;
+    }
+}
