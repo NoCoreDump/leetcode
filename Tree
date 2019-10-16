@@ -188,3 +188,102 @@ class Solution {
         return root;
     }
 }
+
+637. Average of Levels in Binary Tree
+思路：层次遍历
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+       List<Double> ans = new LinkedList<>();
+        if (root == null) return ans;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int count = queue.size();
+            int i = count;
+            double sum = 0;
+            while (i -- > 0) {
+                TreeNode node = queue.poll();
+                sum += (double)node.val;
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+                
+            }
+            ans.add(sum / count);
+        }
+        return ans;
+    }
+    
+}
+
+653. Two Sum IV - Input is a BST
+思路：1.对树进行中序遍历得到一个有序数组，用双指针来求和；96ms
+     2.对树遍历的时候用map存已遍历过得值，在添加之前进行查询；4ms
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ 
+ //双指针法
+class Solution {
+    List<Integer> list;
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) return false;
+        list = new LinkedList<>();
+        inOrder(root);
+        return isFind(k, list, 0, list.size() - 1);
+    }
+    public void inOrder(TreeNode root) {
+        if (root == null) return;
+        inOrder(root.left);
+        list.add(root.val);
+        inOrder(root.right);
+    }
+    public boolean isFind(int k, List<Integer> list, int from, int to) {
+        int left = from;
+        int right = to;
+        while (left < right) {
+            
+            if (list.get(right) == k - list.get(left)) return true;
+            while (left < right && list.get(right) > k - list.get(left)) right--;
+            if (list.get(right) < k - list.get(left)) {
+                left++;
+            }
+        }
+        return false;
+    }
+}
+
+//hashmap法
+class Solution {
+    Set<Integer> set;
+    public boolean findTarget(TreeNode root, int k) {
+        set = new HashSet<>();
+        return helper(root, k);
+    }
+    
+    boolean helper(TreeNode root, int target){
+        if(root == null) {
+            return false;
+        }
+        
+        if(set.contains(target-root.val)){
+            return true;
+        }
+        set.add(root.val);
+        return helper(root.left, target) || helper(root.right, target);
+    }
+}
