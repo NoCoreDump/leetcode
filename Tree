@@ -287,3 +287,58 @@ class Solution {
         return helper(root.left, target) || helper(root.right, target);
     }
 }
+
+108. Convert Sorted Array to Binary Search Tree
+思路：二分法；维护数组区间的左右下标，每次取当前区间的中间值作为当前节点值，其左子树从左半边区间取，右子树从右半边区间取，修改区间下标，进行递归。
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if(nums.length == 0) return null;
+        return helper(nums, 0, nums.length - 1);
+    }
+    public TreeNode helper(int[] nums, int L, int R) {
+        if (L > R) return null;
+        int mid = (L + R) >> 1;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = helper(nums, L, mid - 1);
+        node.right = helper(nums, mid + 1, R);
+        return node;
+    }
+}
+
+538. Convert BST to Greater Tree
+思路：中序遍历，从最大值开始，用一个全局变量curr记录当前遍历的值的和。每次遍历时，将节点值与curr的和赋给当前节点，然后更新curr；
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int curr = 0;
+    public TreeNode convertBST(TreeNode root) {
+        
+        if (root == null) return null;
+        helper(root);
+        return root;
+        
+    }
+    public void helper(TreeNode root) {
+        if (root == null) return;
+        helper(root.right);
+        root.val += curr;
+        curr = root.val;
+        helper(root.left);
+    }
+}
