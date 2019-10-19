@@ -402,3 +402,158 @@ class Solution {
         return output;
     }
 }
+
+993. Cousins in Binary Tree
+思路：层次遍历
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isCousins(TreeNode root, int x, int y) {
+        if (root == null) return false;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int count = queue.size();
+            boolean xFlag = false, yFlag = false;
+            while (count -- > 0) {
+                TreeNode node = queue.poll();
+                if (node.left != null) {
+                    if (node.left.val == x) {
+                        xFlag = true;
+                        if (yFlag) return true;
+                        else if (node.right != null && node.right.val == y) return false;
+                        
+                    } else if(node.left.val == y) {
+                        yFlag = true;
+                        if (xFlag) return true;
+                        else if (node.right != null && node.right.val == x) return false;
+                    }
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    if (node.right.val == x) {
+                        if (yFlag) return true;
+                        else xFlag = true;
+                    } 
+                    if (node.right.val == y) {
+                        if (xFlag) return true;
+                        else yFlag = true;
+                    } 
+                    queue.add(node.right);
+                }
+            }
+        }
+        return false;
+    }
+}
+100. Same Tree
+思路：先判断根节点的值是否相等，然后递归判断左子树和右子树；
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q != null || p != null && q == null) return false;
+        if (p != null && q != null) {
+            if (p.val != q.val) return false;
+            else return (isSameTree(p.left, q.left) && isSameTree(p.right, q.right));
+            
+        }
+        return true;
+    }
+}
+
+783. Minimum Distance Between BST Nodes
+思路：最小差值为：Math.min(当前节点求得的最小差值，其左子树求得的最小差值，其右子树求得的最小差值);
+     设l，r分别表示该几点左右子树中任意两个点的最小差值，
+     l的求解：左子树中与当前节点差值最小的点为：其左子树中值最大的节点，即左子树中最右边的点；
+     r的求解：右子树中与当前节点差值最小的点为：其右子树中值最小的节点，即右子树中最左边的点；
+     利用递归方法，很容易得出结果。
+ /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int minDiffInBST(TreeNode root) {
+        
+        TreeNode left, right;
+        int l = 0;
+        int r = 0;
+        if (root.left != null) {
+            left = root.left;
+            
+            //find the biggest node in the left sub-tree;
+            while (left.right != null) {
+                left = left.right;
+            } 
+            l = Math.min(root.val - left.val, minDiffInBST(root.left));
+            
+        } else {
+            l = 9999;
+        }
+        if (root.right != null) {
+            right = root.right;
+            //find the smallest node in the right sub-tree;
+            while (right.left != null) {
+                right = right.left;
+            }
+            r = Math.min(right.val - root.val, minDiffInBST(root.right));
+        } else {
+            r = 9999;
+        }
+        return Math.min(l, r);
+    }
+    
+}
+
+404. Sum of Left Leaves
+思路：dfs,从左右子树分别递归；
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int sum = 0;
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) return 0;
+        if (root.left == null && root.right == null) return 0;
+        dfs(root);
+        return sum;
+    }
+    public void dfs(TreeNode root) {
+        if (root == null) return;
+        if (root.left != null) {
+            if (root.left.left == null && root.left.right == null) {
+                sum += root.left.val;
+            } else{
+                dfs(root.left);
+            } 
+        } 
+        if (root.right != null) {
+            dfs(root.right);
+        }
+    }
+}
