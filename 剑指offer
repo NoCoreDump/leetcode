@@ -68,3 +68,76 @@ public class Solution {
         return node;
     }
 }
+
+题目描述
+用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
+import java.util.Stack;
+
+public class Solution {
+    Stack<Integer> stack1 = new Stack<Integer>();
+    Stack<Integer> stack2 = new Stack<Integer>();
+
+    public void push(int node) {
+        stack1.push(node);
+    }
+
+    public int pop() {
+        if (!stack2.isEmpty()) return stack2.pop();  //stack2不为空，直接弹出栈顶元素
+        while (!stack1.isEmpty()) {  //stack2为空，将stack1的数据逆向复制到stack2
+            stack2.push(stack1.pop());
+        }
+        return stack2.pop();
+    }
+}
+
+题目描述
+把一个数组最开始的若干个元素搬到数组的末尾，我们称之为数组的旋转。
+输入一个非递减排序的数组的一个旋转，输出旋转数组的最小元素。
+例如数组{3,4,5,1,2}为{1,2,3,4,5}的一个旋转，该数组的最小值为1。
+NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。
+
+
+//方法一：顺序遍历，比第一个值小的即为最小值，特殊情况：数组所有值都相等、旋转数组为数组本身，最小值为第一个数。
+import java.util.ArrayList;
+public class Solution {
+    public int minNumberInRotateArray(int [] array) {
+        if (array.length == 0) return 0;
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < array[0]) return array[i];
+        }
+        return array[0];
+    }
+}
+//方法二：二分法查找（逻辑复杂，运行效率并没有明显提升，或许是因为测试用例太少？数组长度还不够长？）
+import java.util.ArrayList;
+public class Solution {
+    public int minNumberInRotateArray(int [] array) {
+        if (array.length == 0) return 0;
+        if (array[0] < array[array.length -1]) return array[0];  //旋转数组为本身
+        //二分法查找
+        int index1 = 0;
+        int index2 = array.length - 1;
+        int midIndex = 0;
+        while (array[index1] >= array[index2]) {
+            if (index2 - 1 == index1) {
+                midIndex = index2;
+                break;
+            }
+            midIndex = (index1 + index2) / 2;
+            //左中右皆相等，顺序遍历
+            if (array[index1] == array[index2] && array[index1] == array[midIndex]) {
+                for (int i = index1; i <= index2; i++) {
+                    if (array[i] < array[index1]) return array[i];
+                }
+            }
+            //缩小一半范围
+            if (array[midIndex] >= array[index1]) {
+                index1 = midIndex;
+            } else if (array[midIndex] <= array[index2]) {
+                index2 = midIndex;
+            }
+        }
+
+        return array[midIndex];
+    }
+}
