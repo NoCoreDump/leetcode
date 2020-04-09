@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -24,9 +25,25 @@ public class Main {
         while (!q1.isEmpty())
             array[i++] = q1.poll();
     }
+    public static boolean IsPopOrder(int [] pushA,int [] popA) {
+        if (pushA.length == 0 && popA.length == 0) return true;
+
+        ArrayList<Integer> stack = new ArrayList<>();
+        //HashSet<Integer> set = new HashSet<>();
+        int i = 0;
+        for (int n : popA) {
+            while (i < pushA.length && pushA[i++] != n) {
+                stack.add(pushA[i-1]);
+            }
+            if (n == stack.get(stack.size()-1)) {
+                stack.remove(stack.size()-1);
+            }
+        }
+        return stack.size()==0 ? true : false;
+    }
     public static void main(String[] args) {
-        int[] arr = {1,2,3,4,5,6,7,8};
-        reOrderArray(arr);
-        System.out.println(Arrays.toString(arr));
+        int[] arr = {1,2,3,4,5};
+        int[] pop = {4,5,3,2,1};
+        System.out.println(IsPopOrder(arr,pop));
     }
 }
