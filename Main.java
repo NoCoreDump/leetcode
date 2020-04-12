@@ -1,49 +1,67 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import sun.awt.image.ImageWatched;
+
+import java.util.*;
 
 /**
- * @program: leetcode
- * @description: Test
+ * @program: ClassTest
+ * @description: test
  * @author: sunwb
- * @create: 2020-04-05 10:49
+ * @create: 2020-04-10 08:56
  */
 public class Main {
-    public static void reOrderArray(int [] array) {
-        Queue<Integer> q1, q2;
-        q1 = new LinkedList<>();
-        q2 = new LinkedList<>();
-        for (int n : array) {
-            if ((n % 2 ) == 0) q1.add(n);
-            else q2.add(n);
-        }
-        int i = 0;
-        while (!q2.isEmpty()) {
-            array[i++] = q2.poll();
-        }
-        while (!q1.isEmpty())
-            array[i++] = q1.poll();
-    }
-    public static boolean IsPopOrder(int [] pushA,int [] popA) {
-        if (pushA.length == 0 && popA.length == 0) return true;
 
-        ArrayList<Integer> stack = new ArrayList<>();
-        //HashSet<Integer> set = new HashSet<>();
-        int i = 0;
-        for (int n : popA) {
-            while (i < pushA.length && pushA[i++] != n) {
-                stack.add(pushA[i-1]);
-            }
-            if (n == stack.get(stack.size()-1)) {
-                stack.remove(stack.size()-1);
-            }
-        }
-        return stack.size()==0 ? true : false;
-    }
+    /*4
+            0 0
+            0 50
+            50 50
+            50 0*/
     public static void main(String[] args) {
-        int[] arr = {1,2,3,4,5};
-        int[] pop = {4,5,3,2,1};
-        System.out.println(IsPopOrder(arr,pop));
+
+//        Scanner scanner = new Scanner(System.in);
+//        int n = Integer.parseInt(scanner.nextLine());
+////        int[][] loc = new int[n][2];
+//        int [] loc = new int[n];
+//        for (int i = 0; i < n; i++) {
+//            String[] s = scanner.nextLine().split(" ");
+//            loc[i] = Integer.parseInt(s[0]);
+////            loc[i][1] = Integer.parseInt(s[1]);
+//        }
+        Main m = new Main();
+        System.out.println((m.Permutation("aab")).toString());
+
+
     }
+    public ArrayList<String> Permutation(String str) {
+        ArrayList<String> res = new ArrayList<>();
+        char[] charArr = str.toCharArray();
+        Arrays.sort(charArr);
+        StringBuilder sb = new StringBuilder();
+        boolean[] used = new boolean[charArr.length];
+        dfs(charArr, sb, used, res);
+
+        return res;
+    }
+    public void dfs(char[] arr, StringBuilder sb, boolean[] used, ArrayList<String> res) {
+        if (sb.length() == arr.length) {
+            res.add(sb.toString());
+            return;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i != 0 && arr[i] == arr[i-1] && !used[i-1])
+                continue;
+            sb.append(arr[i]);
+            used[i] = true;
+            dfs(arr, sb, used,res);
+            sb.deleteCharAt(sb.length()-1);
+            used[i] = false;
+
+        }
+
+    }
+
+
+
 }

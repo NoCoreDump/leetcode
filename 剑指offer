@@ -490,3 +490,115 @@ public class Solution {
     }
 }
 
+二叉树中和为给定值的路径
+题目描述
+输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠前)
+public class Solution {
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        TreeNode h = root;
+        ArrayList<Integer> list = new ArrayList<>();
+        helper(root, target, list, res);
+        return res;
+    }
+    public void helper(TreeNode root, int target, ArrayList<Integer> list, ArrayList<ArrayList<Integer>> res) {
+        if (root == null || root.val > target) {
+            return;
+        }
+        list.add(root.val);
+        target = target - root.val;
+        if (target == 0 && root.left == null && root.right == null) {
+            ArrayList<Integer> l = new ArrayList<>(list.size());
+            l = (ArrayList<Integer>)list.clone();
+            res.add(l);
+        } else {
+            helper(root.left, target, list, res);
+            helper(root.right, target, list, res);
+        }
+        list.remove(list.size()-1);
+    }
+}
+
+复杂链表的复制
+题目描述
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。
+（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+/*
+public class RandomListNode {
+    int label;
+    RandomListNode next = null;
+    RandomListNode random = null;
+
+    RandomListNode(int label) {
+        this.label = label;
+    }
+}
+*/
+public class Solution {
+    public RandomListNode Clone(RandomListNode pHead)
+    {
+        if (pHead == null) return pHead;
+        RandomListNode head, cur;
+        //再每个节点后面复制它本身
+        cur = pHead;
+        while (cur != null) {
+            RandomListNode node = new RandomListNode(cur.label);
+            node.next = cur.next;
+            cur.next = node;
+            cur = node.next;
+        }
+        //复制random
+        cur = pHead;
+        while (cur != null) {
+            RandomListNode p = cur.next;
+            if (cur.random!= null) p.random = cur.random.next;
+            cur = p.next;
+        }
+        //拆分
+        cur = pHead;
+        head = pHead.next;
+        while (cur.next != null) {
+            RandomListNode p = cur.next;
+            cur.next = p.next;
+            cur = p;
+        }
+        return head;
+    }
+}
+
+字符串的排列
+题目描述
+输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+输入描述:
+输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
+import java.util.*;
+public class Solution {
+    public ArrayList<String> Permutation(String str) {
+        ArrayList<String> res = new ArrayList<>();
+        if (str.length() == 0) return res;
+        char[] charArr = str.toCharArray();
+        Arrays.sort(charArr);
+        StringBuilder sb = new StringBuilder();
+        boolean[] used = new boolean[charArr.length];
+        dfs(charArr, sb, used, res);
+        return res;
+    }
+    public void dfs(char[] arr, StringBuilder sb, boolean[] used, ArrayList<String> res) {
+        if (sb.length() == arr.length) {
+            res.add(sb.toString());
+            return;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+            if (i != 0 && arr[i] == arr[i - 1] && !used[i - 1]) /* 保证不重复 */
+                continue;
+            sb.append(arr[i]);
+            used[i] = true;
+            dfs(arr, sb, used,res);
+            sb.deleteCharAt(sb.length()-1);
+            used[i] = false;
+        }
+    }
+}
