@@ -1,6 +1,7 @@
 import sun.awt.image.ImageWatched;
 
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 /**
  * @program: ClassTest
@@ -10,58 +11,44 @@ import java.util.*;
  */
 public class Main {
 
-    /*4
-            0 0
-            0 50
-            50 50
-            50 0*/
     public static void main(String[] args) {
-
-//        Scanner scanner = new Scanner(System.in);
-//        int n = Integer.parseInt(scanner.nextLine());
-////        int[][] loc = new int[n][2];
-//        int [] loc = new int[n];
-//        for (int i = 0; i < n; i++) {
-//            String[] s = scanner.nextLine().split(" ");
-//            loc[i] = Integer.parseInt(s[0]);
-////            loc[i][1] = Integer.parseInt(s[1]);
-//        }
-        Main m = new Main();
-        System.out.println((m.Permutation("aab")).toString());
-
-
+        int[] nums = {30, 32, 321};
+        System.out.println(fun(nums));
     }
-    public ArrayList<String> Permutation(String str) {
-        ArrayList<String> res = new ArrayList<>();
-        char[] charArr = str.toCharArray();
-        Arrays.sort(charArr);
+    public static String fun(int[] nums) {
         StringBuilder sb = new StringBuilder();
-        boolean[] used = new boolean[charArr.length];
-        dfs(charArr, sb, used, res);
-
-        return res;
-    }
-    public void dfs(char[] arr, StringBuilder sb, boolean[] used, ArrayList<String> res) {
-        if (sb.length() == arr.length) {
-            res.add(sb.toString());
-            return;
+        Integer[] arr = new Integer[nums.length];
+        for (int i = 0; i < nums.length; ++i) {
+            arr[i] = new Integer(nums[i]);
         }
-        for (int i = 0; i < arr.length; i++) {
-            if (used[i]) {
-                continue;
+        baseSort(arr);
+        for (int n : arr) {
+            sb.append(n);
+        }
+        return sb.toString();
+    }
+    public static void baseSort(Integer[] nums) {
+        String[] numStr = new String[nums.length];
+        for (int i = 0; i < nums.length; ++i) {
+            numStr[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(nums, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                String s1 = String.valueOf(o1);
+                String s2 = String .valueOf(o2);
+                for (int i = 0; i < Math.max(s1.length(), s2.length()); ++i) {
+                    char c1, c2;
+                    if (i >= s1.length()) c1 = s1.charAt(0);
+                    else c1 = s1.charAt(i);
+                    if (i >= s2.length()) c2 = s2.charAt(0);
+                    else c2 = s2.charAt(i);
+                    if (c1 != c2) return c1 - c2;
+
+                }
+                return 0;
             }
-            if (i != 0 && arr[i] == arr[i-1] && !used[i-1])
-                continue;
-            sb.append(arr[i]);
-            used[i] = true;
-            dfs(arr, sb, used,res);
-            sb.deleteCharAt(sb.length()-1);
-            used[i] = false;
-
-        }
-
+        });
     }
-
-
 
 }
