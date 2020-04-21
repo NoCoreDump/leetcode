@@ -12,43 +12,38 @@ import java.util.function.ToIntFunction;
 public class Main {
 
     public static void main(String[] args) {
-        int[] nums = {30, 32, 321};
-        System.out.println(fun(nums));
+        System.out.println(GetUglyNumber_Solution(7));
     }
-    public static String fun(int[] nums) {
-        StringBuilder sb = new StringBuilder();
-        Integer[] arr = new Integer[nums.length];
-        for (int i = 0; i < nums.length; ++i) {
-            arr[i] = new Integer(nums[i]);
+    public static int GetUglyNumber_Solution(int index) {
+        int i = 1;
+        if (index == 1) return 1;
+        while (index > 0) {
+            if (isUglyNumber(i++))
+                index--;
         }
-        baseSort(arr);
-        for (int n : arr) {
-            sb.append(n);
-        }
-        return sb.toString();
+        return i - 1;
     }
-    public static void baseSort(Integer[] nums) {
-        String[] numStr = new String[nums.length];
-        for (int i = 0; i < nums.length; ++i) {
-            numStr[i] = String.valueOf(nums[i]);
-        }
-        Arrays.sort(nums, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                String s1 = String.valueOf(o1);
-                String s2 = String .valueOf(o2);
-                for (int i = 0; i < Math.max(s1.length(), s2.length()); ++i) {
-                    char c1, c2;
-                    if (i >= s1.length()) c1 = s1.charAt(0);
-                    else c1 = s1.charAt(i);
-                    if (i >= s2.length()) c2 = s2.charAt(0);
-                    else c2 = s2.charAt(i);
-                    if (c1 != c2) return c1 - c2;
 
-                }
-                return 0;
+    public static boolean isUglyNumber(int n) {
+        boolean flag = false;
+        while (n > 1) {
+            if (n % 5 == 0) {
+                n /= 5;
+                flag = true;
             }
-        });
+            if (n % 3 == 0) {
+                n /= 3;
+                flag = true;
+            }
+            if (n % 2 == 0) {
+                n /= 2;
+                flag = true;
+            }
+
+            if (n != 1 && !flag) return flag;
+            flag = false;
+        }
+        return true;
     }
 
 }
