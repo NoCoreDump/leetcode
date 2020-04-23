@@ -930,3 +930,92 @@ public class Solution {
         return dp[index-1];
     }
 }
+
+排序数组中和为S的两个数
+题目描述
+输入一个递增排序的数组和一个数字S，在数组中查找两个数，使得他们的和正好是S，如果有多对数字的和等于S，输出两个数的乘积最小的。
+输出描述:对应每个测试案例，输出两个数，小的先输出。
+import java.util.ArrayList;
+public class Solution {
+    public ArrayList<Integer> FindNumbersWithSum(int [] array,int sum) {
+         ArrayList<Integer> res = new ArrayList<>();
+        if (array.length == 0) return res;
+         int l = 0;
+        int r = array.length - 1;
+        while (l < r) {
+            int s = array[l] + array[r];
+            if (s == sum) {
+                res.add(array[l]);
+                res.add(array[r]);
+                return res;
+            } else if (s > sum) {
+                r--;
+            } else {
+                l++;
+            }
+        }
+        return res;
+    }
+}
+
+和为S的连续正整数序列
+题目描述
+输出所有和为S的连续正数序列。序列内按照从小至大的顺序，序列间按照开始数字从小到大的顺序
+/************************dp数组**************************/
+import java.util.ArrayList;
+import java.util.*;
+public class Solution {
+    public ArrayList<ArrayList<Integer> > FindContinuousSequence(int sum) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        int len = (sum + 1) / 2 + 1;
+        int[][] dp = new int[len][len];
+        Arrays.fill(dp[0], 0);
+
+        for (int i = 0; i < len; i++) {
+            dp[i][0] = 0;
+            dp[i][i] = i;
+        }
+        for (int i = 1; i < len; i++) {
+            for (int j = i + 1; j < len ; j++) {
+                dp[i][j] = dp[i][j-1] + j;
+                if (dp[i][j] == sum) {
+                    ArrayList<Integer> list = new ArrayList<>();
+                    for (int k = i; k <= j; k++)
+                        list.add(k);
+                    res.add(list);
+                }
+            }
+        }
+        return res;
+    }
+}
+/*********************** 头尾双指针法 *************/
+import java.util.ArrayList;
+import java.util.*;
+public class Solution {
+    public ArrayList<ArrayList<Integer> > FindContinuousSequence(int sum) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        int l = 1, r = 2;
+        int s = 3;
+        int len = (sum + 1) / 2;
+         while (l < r) {
+             if (s == sum) {
+                 ArrayList<Integer> list = new ArrayList<>();
+                 for (int i = l; i <= r; i++)
+                     list.add(i);
+                 res.add(list);
+                 s -= l;
+                 l++;
+                 r++;
+                 s += r;
+             } else if (s < sum) {
+                 r++;
+                 s += r;
+             } else {
+                 s -= l;
+                 l++;
+             }
+         }
+        return res;
+    }
+}

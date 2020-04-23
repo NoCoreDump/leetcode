@@ -12,38 +12,34 @@ import java.util.function.ToIntFunction;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println(GetUglyNumber_Solution(7));
-    }
-    public static int GetUglyNumber_Solution(int index) {
-        int i = 1;
-        if (index == 1) return 1;
-        while (index > 0) {
-            if (isUglyNumber(i++))
-                index--;
-        }
-        return i - 1;
+        int s = 100;
+        ArrayList<ArrayList<Integer>> res = FindContinuousSequence(s);
+        System.out.println(res.toString());
     }
 
-    public static boolean isUglyNumber(int n) {
-        boolean flag = false;
-        while (n > 1) {
-            if (n % 5 == 0) {
-                n /= 5;
-                flag = true;
-            }
-            if (n % 3 == 0) {
-                n /= 3;
-                flag = true;
-            }
-            if (n % 2 == 0) {
-                n /= 2;
-                flag = true;
-            }
 
-            if (n != 1 && !flag) return flag;
-            flag = false;
+    public static ArrayList<ArrayList<Integer> > FindContinuousSequence(int sum) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        int len = (sum + 1) / 2 + 1;
+        int[][] dp = new int[len][len];
+        Arrays.fill(dp[0], 0);
+
+        for (int i = 0; i < len; i++) {
+            dp[i][0] = 0;
+            dp[i][i] = i;
         }
-        return true;
+        for (int i = 1; i < len; i++) {
+            for (int j = i + 1; j < len ; j++) {
+                dp[i][j] = dp[i][j-1] + j;
+                if (dp[i][j] == sum) {
+                    ArrayList<Integer> list = new ArrayList<>();
+                    for (int k = i; k <= j; k++)
+                        list.add(k);
+                    res.add(list);
+                }
+            }
+        }
+        return res;
     }
 
 }
