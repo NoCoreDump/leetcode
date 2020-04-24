@@ -12,12 +12,20 @@ import java.util.function.ToIntFunction;
 public class Main {
 
     public static void main(String[] args) {
-        int s = 100;
-        ArrayList<ArrayList<Integer>> res = FindContinuousSequence(s);
-        System.out.println(res.toString());
+        System.out.println(ReverseSentence(" "));
     }
 
 
+    public static String ReverseSentence(String str) {
+        if (str == null || str.length() <= 1)
+            return str;
+        String[] strArr = str.split(" ");
+        StringBuilder res = new StringBuilder();
+        for (int i = strArr.length - 1; i >= 0; i--) {
+            res.append(strArr[i] + " ");
+        }
+        return res.substring(0, res.length()-1);
+    }
     public static ArrayList<ArrayList<Integer> > FindContinuousSequence(int sum) {
         ArrayList<ArrayList<Integer>> res = new ArrayList<>();
         int len = (sum + 1) / 2 + 1;
