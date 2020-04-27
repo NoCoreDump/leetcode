@@ -54,31 +54,10 @@ public class Test {
 
     }
     public static void main(String[] args) {
-
-        int n = 200000;
-//        int n = 10;
-        String[] table = new String[n + 1];
-        int[] index = new int[n + 1];
-        int start = 0;
-        for (int i = 0; i <= n; i++) {
-             String is = "" + i;
-             int len = is.length() + 1;
-//             char c = (char)len;
-
-//            System.out.println((int) c);
-             table[i] = "" + len + is + ",";
-             index[i] = start;
-             start += table[i].length();
-        }
-        String outfile = "src/res.txt";
-        String outindex = "src/index.txt";
-        output(outfile, table);
-        output(outindex, index);
-        String inputfile = "src/res.txt";
-//        try{
-//            readData(inputfile);
-//        }catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String str = "你好";
+        System.out.println();
+        byte[] bytes = str.getBytes();
+        System.out.println(bytes.toString());
+        System.out.println(bytes.length);
     }
 }

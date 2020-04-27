@@ -10,73 +10,63 @@ import java.util.function.ToIntFunction;
  * @create: 2020-04-10 08:56
  */
 public class Main {
-
+    int[] arr;
     public static void main(String[] args)
     {
-        ArrayList<Integer> res = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        int n = Integer.parseInt(scanner.nextLine());
-        int[][] path = new int[10][10];
-        String[] inStr = new String[n];
-        for (int i = 0; i < n; i++) {
-            inStr[i] = scanner.nextLine();
-        }
-//        System.out.println(Arrays.toString(inStr));
-
-        for (String s : inStr) {
-            String[] ss = s.split(" ");
-            int start = Integer.parseInt(ss[1]);
-            int end = Integer.parseInt(ss[2]);
-            if ("1".equals(ss[0])) {
-                int w = Integer.parseInt(ss[3]);
-                update(path, start, end, w);
-            } else {
-                res.add(getCost(path, start, end));
-            }
-        }
-        for (int r : res)
-            System.out.println(r);
+        int[] array = new int[]{1,2,3,4,5,6,7,0};
+        Main main = new Main();
+        main.arr = new int[array.length];
+        System.out.println(main.InversePairs(array));
     }
-
-    private static int getCost(int[][] path, int start, int end) {
-        int cost = 0;
-        int p1, p2;
-        p1 = start;
-        p2 = end;
-        while (p1 != p2) {
-            if (p1 < p2) {
-                int p = p2;
-                p2 = (p2 % 2 == 0) ? p2 / 2 : (p2 - 1) / 2;
-                cost += path[p][p2];
-
-            } else {
-                int p = p1;
-                p1 = (p1 % 2 == 0) ? p1 / 2 : (p1 - 1) / 2;
-                cost += path[p][p1];
-            }
-//            System.out.println("Cost: " + cost);
-        }
-        return cost;
+    public int InversePairs(int [] array) {
+        if (array.length == 0) return 0;
+        int[] res = new int[1];
+        mergeSort(res, array, 0, array.length - 1);
+        return res[0];
     }
+    public void mergeSort(int[] res, int[] array, int l, int r) {
+        if (l >= r) return;
 
-    private static void update(int[][] path, int start, int end, int w) {
-        int p1, p2;
-        p1 = start;
-        p2 = end;
-        while (p1 != p2) {
-            if (p1 < p2) {
-                int p = p2;
-                p2 = (p2 % 2 == 0) ? p2 / 2 : (p2 - 1) / 2;
-                path[p2][p] += w;
-                path[p][p2] += w;
+        int mid = (l + r) / 2;
+        mergeSort(res, array, l, mid);
+        mergeSort(res, array, mid+1, r);
+        merge(res, array, l, mid, r);
+    }
+    public static void swap(int[] array, int i, int j) {
+        array[i] = array[i] ^ array[j];
+        array[j] = array[i] ^ array[j];
+        array[i] = array[i] ^ array[j];
+    }
+    public void merge(int[] res, int[] array, int l, int mid, int r) {
+        int L = mid;
+        int R = r;
+        int i = r;
+        while (L >= l && R > mid) {
+            if (array[L] <= array[R]) {
+                arr[i] = array[R];
+                R--;
             } else {
-                int p = p1;
-                p1 = (p1 % 2 == 0) ? p1 / 2 : (p1 - 1) / 2;
-                path[p1][p] += w;
-                path[p][p1] += w;
+                res[0] += R - mid;
+                arr[i] = array[L];
+                L--;
+            }
+            i--;
+        }
+        if (L == l - 1) {
+            while (R > mid) {
+                arr[i--] = array[R--];
             }
         }
-//        System.out.println("parent : " + p1);
+        if (R == mid) {
+            while (L >= l) {
+                arr[i--] = array[L--];
+            }
+        }
+        i = l;
+        while (i <= r) {
+            array[i] = arr[i];
+            i++;
+        }
     }
 
 }
