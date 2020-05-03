@@ -1,4 +1,4 @@
-import sun.awt.image.ImageWatched;
+
 
 import java.util.*;
 import java.util.function.ToIntFunction;
@@ -10,63 +10,32 @@ import java.util.function.ToIntFunction;
  * @create: 2020-04-10 08:56
  */
 public class Main {
-    int[] arr;
-    public static void main(String[] args)
-    {
-        int[] array = new int[]{1,2,3,4,5,6,7,0};
-        Main main = new Main();
-        main.arr = new int[array.length];
-        System.out.println(main.InversePairs(array));
-    }
-    public int InversePairs(int [] array) {
-        if (array.length == 0) return 0;
-        int[] res = new int[1];
-        mergeSort(res, array, 0, array.length - 1);
-        return res[0];
-    }
-    public void mergeSort(int[] res, int[] array, int l, int r) {
-        if (l >= r) return;
-
-        int mid = (l + r) / 2;
-        mergeSort(res, array, l, mid);
-        mergeSort(res, array, mid+1, r);
-        merge(res, array, l, mid, r);
-    }
-    public static void swap(int[] array, int i, int j) {
-        array[i] = array[i] ^ array[j];
-        array[j] = array[i] ^ array[j];
-        array[i] = array[i] ^ array[j];
-    }
-    public void merge(int[] res, int[] array, int l, int mid, int r) {
-        int L = mid;
-        int R = r;
-        int i = r;
-        while (L >= l && R > mid) {
-            if (array[L] <= array[R]) {
-                arr[i] = array[R];
-                R--;
-            } else {
-                res[0] += R - mid;
-                arr[i] = array[L];
-                L--;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = Integer.parseInt(scanner.nextLine());
+        int res = 0;
+        ArrayList<ArrayList<Integer>> inData = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            ArrayList<Integer> list = new ArrayList<>();
+            String[] s = scanner.nextLine().split(" ");
+            for (int j = 0; j <= i; j++) {
+                list.add(Integer.parseInt(s[j]));
             }
-            i--;
+            inData.add(list);
         }
-        if (L == l - 1) {
-            while (R > mid) {
-                arr[i--] = array[R--];
+        for (ArrayList<Integer> l : inData)
+            System.out.println(l.toString());
+//        res = maxMoney(inData);
+        System.out.println(res);
+    }
+    public static int maxMoney(ArrayList<ArrayList<Integer>> list) {
+        for (int i = list.size() - 2; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) {
+                int val = Math.max(list.get(i+1).get(j), list.get(i+1).get(j+1));
+                list.get(i).set(j, list.get(i).get(j) + Math.max(list.get(i+1).get(j), list.get(i+1).get(j+1)));
             }
         }
-        if (R == mid) {
-            while (L >= l) {
-                arr[i--] = array[L--];
-            }
-        }
-        i = l;
-        while (i <= r) {
-            array[i] = arr[i];
-            i++;
-        }
+        return list.get(0).get(0);
     }
 
 }
