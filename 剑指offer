@@ -1253,3 +1253,148 @@ public class Solution { //贪心
         return (int)Math.pow(3, times3) * (int)Math.pow(2, times2);
     }
 }
+
+滑动窗口最大值
+题目描述
+给定一个数组和滑动窗口的大小，找出所有滑动窗口里数值的最大值。例如，如果输入数组{2,3,4,2,6,2,5,1}及滑动窗口的大小3，那么一共存在6个滑动窗口，他们的最大值分别为{4,4,6,6,6,5}；
+针对数组{2,3,4,2,6,2,5,1}的滑动窗口有以下6个： {[2,3,4],2,6,2,5,1}， {2,[3,4,2],6,2,5,1}， {2,3,[4,2,6],2,5,1}， {2,3,4,[2,6,2],5,1}， {2,3,4,2,[6,2,5],1}， {2,3,4,2,6,[2,5,1]}。
+public class Solution {
+    public ArrayList<Integer> maxInWindows(int [] num, int size)
+    {
+        ArrayList<Integer> res = new ArrayList<>();
+        if (num == null || num.length == 0 || size == 0 || size > num.length) return res;
+        PriorityQueue<Integer> queue = new PriorityQueue<>(size, new Comparator<Integer>() {
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+        int l = 0;
+        int r = 0;
+        while (r < size) {
+            queue.offer(num[r++]);
+        }
+        res.add(queue.peek());
+        while (r < num.length) {
+            queue.offer(num[r++]);
+            l++;
+            queue.remove(num[l-1]);
+            res.add(queue.peek());
+        }
+        return res;
+    }
+}
+
+矩阵路径
+题目描述
+请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。路径可以从矩阵中的任意一个格子开始，每一步可以在矩阵中向左，向右，向上，向下移动一个格子。
+如果一条路径经过了矩阵中的某一个格子，则该路径不能再进入该格子。
+思路：回溯法
+public class Main {
+    boolean[][] vis;
+    char[][] matrix;
+    int r, c;
+    HashSet<Character> set;
+    boolean res = false;
+    public boolean hasPath(char[] mat, int rows, int cols, char[] str)
+    {
+        if (str.length == 0 || mat.length == 0) return false;
+        this.r = rows;
+        this.c = cols;
+        vis = new boolean[r][c];
+        set = new HashSet<>();
+        matrix = new char[r][c];
+        for (char c : str) {
+            set.add(c);
+        }
+        for (int i = 0; i < r; ++i) {
+            for (int j = 0; j < c; ++j) {
+                matrix[i][j] = mat[i*cols+j];
+                System.out.print(matrix[i][j] + "  ");
+                if (!set.contains(matrix[i][j]))
+                    vis[i][j] = true;
+            }
+            System.out.println();
+        }
+        for (int i = 0; i < r && !res; ++i) {
+            for (int j = 0; j < c && !res; ++j)
+                dfs(i, j, str, 0);
+        }
+        return res;
+    }
+    public void dfs(int rows, int cols, char[] str, int point) {
+        if (rows < 0 || rows >= r || cols < 0 || cols >= c || vis[rows][cols] || res) return;
+        vis[rows][cols] = true;
+        if (matrix[rows][cols] != str[point]) {
+            vis[rows][cols] = false;
+            return;
+        }
+        if (point == str.length - 1) {
+            res = true;
+            return;
+        }
+        System.out.println("cur matrix: " + matrix[rows][cols]);
+        System.out.println("cur str: " + str[point]);
+        dfs(rows, cols - 1, str, point + 1);
+        dfs(rows, cols + 1, str, point + 1);
+        dfs(rows - 1, cols, str, point + 1);
+        dfs(rows + 1, cols, str, point + 1);
+        vis[rows][cols] = false;
+        point--;
+    }
+    public static void main(String[] args) {
+        char[] mat = "ABCESFCSADEE".toCharArray();
+        char[] str = "ABCB".toCharArray();
+        System.out.println(new Main().hasPath(mat, 3, 4, str));
+    }
+}
+机器人的活动范围
+题目描述
+地上有一个m行和n列的方格。一个机器人从坐标0,0的格子开始移动，每一次只能向左，右，上，下四个方向移动一格，但是不能进入行坐标和列坐标的数位之和大于k的格子。
+例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。但是，它不能进入方格（35,38），因为3+5+3+8 = 19。请问该机器人能够达到多少个格子？
+public class Solution {
+    int count = 0;
+    int r, c, k;
+    boolean[][] vis;  //记录遍历过的位置
+    int[][] digitSum;  //避免重复计算，将结果存在数组
+    public int movingCount(int threshold, int rows, int cols)
+    {
+        k = threshold;
+        r = rows;
+        c = cols;
+        vis = new boolean[r][c];
+        digitSum = new int[r][c];
+        initDigitSum();
+        dfs(0, 0);
+        return count;
+    }
+    public void dfs(int i, int j) {
+        if (i < 0 || i >= r || j < 0 || j >= c || vis[i][j]) return;
+        vis[i][j] = true;
+        count++;
+        dfs(i - 1, j);
+        dfs(i, j - 1);
+        dfs(i, j + 1);
+        dfs(i + 1, j);
+    }
+    private void initDigitSum() {
+        int n = Integer.max(r, c);
+        int[] dig = new int[n];
+        for (int i = 0; i < n; ++i) {
+            dig[i] = digSum(i);
+        }
+        for (int i = 0; i < r; ++i) {
+            for (int j = 0; j < c; ++j) {
+                digitSum[i][j] = dig[i] + dig[j];
+                if (digitSum[i][j] > k) vis[i][j] = true;  //在求和的时候直接过滤掉不符合的点
+            }
+        }
+    }
+    public int digSum(int a) {
+        int sum = 0;
+        while (a != 0) {
+            sum += a % 10;
+            a /= 10;
+        }
+        return sum;
+    }
+}
