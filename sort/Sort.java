@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * @program: leetcode
+ * @program: sort algorithm
  * @description: 各种排序算法
  * @author: sunwb
  * @create: 2020-04-11 22:20
@@ -23,7 +23,9 @@ public class Sort {
     * @Date 2020/4/11 22:22
     **/
     public static void insertSort(int[] arr) {
-        if (arr == null || arr.length == 0) return;
+        if (arr == null || arr.length == 0) {
+            return;
+        }
         for (int i = 1; i < arr.length; i++) {
             for (int j = i - 1; j >= 0 && arr[j] > arr[j+1]; j--)
                 swap(arr, j, j+1);
