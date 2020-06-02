@@ -106,6 +106,52 @@ public class Sort {
         }
         return new int[] {less, more};
     }
+    /*
+     * @Author sunwb
+     * @Description 堆排，默认从小到大
+     * @Date 21:35 2020/6/1
+     * @Param [arr]
+     * @return void
+     **/
+    public static void heapSort(int[] arr) {
+        //建立大根堆
+        for (int i = 0; i < arr.length; i++) {
+            heapInsert(arr, i);
+        }
+
+        //将堆顶元素与数组最后一个元素交换，使用指针直至所有元素交换完毕
+        int size = arr.length;
+        //最小元素放置在数组末尾
+        swap(arr, 0, --size);
+        while (size > 0) {
+            heapify(arr, 0, size);
+            swap(arr, 0, --size);
+        }
+    }
+
+    //堆顶元素下沉
+    public static void heapify(int[] arr, int index, int size) {
+        int left = index * 2 + 1;
+        while (left < size) {
+            int largest = left + 1 < size && arr[left + 1] > arr[left] ? left + 1 : left;
+            largest = arr[largest] > arr[index] ? largest : index;
+            if (largest == index) {
+                break;
+            }
+            swap(arr, largest, index);
+            index = largest;
+            left = index * 2 + 1;
+        }
+    }
+
+    private static void heapInsert(int[] arr, int index) {
+        int parent = (index - 1) / 2;
+        while (index != 0 && arr[index] > arr[parent]) {
+            swap(arr, index, parent);
+            index = parent;
+            parent = (index - 1) / 2;
+        }
+    }
 
     /*
     * @Description 交换数组的两个值, 位运算写法有风险（两数相等时，有一个为0），需要先判断两个值是否相等
@@ -129,7 +175,7 @@ public class Sort {
             data = GeneratorArray.generateRandomArray(100, 20);
             int[] data1 = Arrays.copyOf(data, data.length);
             quickSort(data);
-            mergeSort(data1);
+            heapSort(data1);
             for (int j = 0; j < data.length; ++j) {
                 if (data[j] != data1[j]) {
                     System.out.println("*******************fuck**********************\n" + Arrays.toString(data) + "\n" + Arrays.toString(data1));
