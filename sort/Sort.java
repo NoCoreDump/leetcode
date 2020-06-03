@@ -174,7 +174,7 @@ public class Sort {
         for (int i = 0; i < 20; i++) {
             data = GeneratorArray.generateRandomArray(100, 20);
             int[] data1 = Arrays.copyOf(data, data.length);
-            quickSort(data);
+            mergeSort(data);
             heapSort(data1);
             for (int j = 0; j < data.length; ++j) {
                 if (data[j] != data1[j]) {
