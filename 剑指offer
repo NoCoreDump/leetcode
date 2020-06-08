@@ -644,141 +644,85 @@ public class Solution {
 输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
 输入描述:
 输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
-import java.util.*;
 public class Solution {
-    public ArrayList<String> Permutation(String str) {
-        ArrayList<String> res = new ArrayList<>();
-        if (str.length() == 0) return res;
-        char[] charArr = str.toCharArray();
-        Arrays.sort(charArr);
-        StringBuilder sb = new StringBuilder();
-        boolean[] used = new boolean[charArr.length];
-        dfs(charArr, sb, used, res);
+    public String PrintMinNumber(int [] numbers) {
+        if (numbers == null || numbers.length == 0) return "";
+        String[] nums = new String[numbers.length];
+        int i = 0;
+        for (int n : numbers) {
+            nums[i++] = n + "";
+        }
+        Arrays.sort(nums, (s1, s2) -> (s1 + s2).compareTo(s2+s1));
+        String res = "";
+        for (String s : nums)
+            res += s;
         return res;
     }
-    public void dfs(char[] arr, StringBuilder sb, boolean[] used, ArrayList<String> res) {
-        if (sb.length() == arr.length) {
-            res.add(sb.toString());
-            return;
-        }
-        for (int i = 0; i < arr.length; i++) {
-            if (used[i]) {
-                continue;
-            }
-            if (i != 0 && arr[i] == arr[i - 1] && !used[i - 1]) /* 保证不重复 */
-                continue;
-            sb.append(arr[i]);
-            used[i] = true;
-            dfs(arr, sb, used,res);
-            sb.deleteCharAt(sb.length()-1);
-            used[i] = false;
-        }
-    }
+
 }
 
 数组中出现次数超过一半的数字
 题目描述
 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。例如输入一个长度为9的数组{1,2,3,2,2,2,5,4,2}。
 由于数字2在数组中出现了5次，超过数组长度的一半，因此输出2。如果不存在则输出0。
-import java.util.Arrays;
-public class Solution {
-    public int MoreThanHalfNum_Solution(int [] array) {
-        if (array.length == 0) return 0;
-        int res = 0;
-        int n = array.length / 2;
-
-        //使用Arrays.sort排序的做法
-        //Arrays.sort(array);
-        /*int i = 0;
-        while (i < array.length - n) {
-        if (array[i] == array[i+n]) {
-            res = array[i];
-            return res;
-        } else {
-            i++;
-        }
-    }*/
-
-        //使用计数排序
-        int min = 99999;
-        int max = -9999;
-        for (int a : array) {
-            min = Math.min(min, a);
-            max = Math.max(max, a);
-        }
-        int[] table = new int[max-min+1];
-        for (int a : array) {
-            table[a-min]++;
-        }
-        for (int i = 0; i < table.length; ++i) {
-            if (table[i] > n) {
-                res = i + min;
-                break;
-            }
-        }
-        return res;
-    }
-}
+思路一：多数投票算法，详情百度
+思路二：快排中的partition，每次随机选一个数做比较，小于等于该数的放左边，大于的放右边，返回小于等于该数的个数；调整区间，直到个数为n/2，即该数为中位数;
 
 数组中最小的k个数
 题目描述
 输入n个整数，找出其中最小的K个数。例如输入4,5,1,6,2,7,3,8这8个数字，则最小的4个数字是1,2,3,4,。
-import java.util.*;
+思路一：优先队列
+思路二：与上题类似，使用partition操作，直到找到一个数，小于等于它的个数刚好为k个；
 public class Solution {
     public ArrayList<Integer> GetLeastNumbers_Solution(int [] input, int k) {
-        if (input.length == 0 || k <= 0 || k > input.length) return new ArrayList<Integer>();
-        Queue<Integer> q = new PriorityQueue<>(input.length);
-        for (int i : input) {
-            q.add(i);
-
-        }
         ArrayList<Integer> res = new ArrayList<>();
-        while (!q.isEmpty() && k-- > 0) {
-            res.add(q.poll());
+        if (input == null || k <= 0 || input.length == 0 || k > input.length) return res;
+        findSmallerKNums(input, k);
+        for (int i = 0; i < k; i++) {
+            res.add(input[i]);
         }
         return res;
     }
-}
-
-//大顶堆
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Comparator;
-public class Solution {
-   public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
-       ArrayList<Integer> result = new ArrayList<Integer>();
-       int length = input.length;
-       if(k > length || k == 0){
-           return result;
-       }
-        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>(k, new Comparator<Integer>() {
-
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        for (int i = 0; i < length; i++) {
-            if (maxHeap.size() != k) {
-                maxHeap.offer(input[i]);
-            } else if (maxHeap.peek() > input[i]) {
-                Integer temp = maxHeap.poll();
-                temp = null;
-                maxHeap.offer(input[i]);
+    public void findSmallerKNums(int[] input, int k) {
+        int l = 0;
+        int h = input.length - 1;
+        while (l < h) {
+            int j = partition(input, l, h);
+            if (j == k)
+                break;
+            if (j > k) {
+                h = j - 1;
+            } else {
+                l = j + 1;
             }
         }
-        for (Integer integer : maxHeap) {
-            result.add(integer);
+    }
+    public int partition(int[] nums, int l, int h) {
+        int x = nums[l];
+        int i = l;
+        int j = h + 1;
+        while (true) {
+            while (i != h && nums[++i] < x);
+            while (j != l && nums[--j] > x);
+            if (i >= j) break;
+            swap(nums, i, j);
         }
-        return result;
+        swap(nums, l, j);
+        return j;
+    }
+    public void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
     }
 }
+
 
 连续子数组的最大和
 题目描述
 HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？
 例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。
-//动态规划，dp[i]表示以第i个元素为终点的连续子向量的最大和值
+思路：动态规划，dp[i]表示以第i个元素为终点的连续子向量的最大和值
 public class Solution {
     public int FindGreatestSumOfSubArray(int[] array) {
         int n = array.length;
@@ -793,6 +737,34 @@ public class Solution {
         return max;
     }
 }
+
+1～n中1出现的次数
+题目描述
+求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。
+ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数（从1 到 n 中1出现的次数）。
+思路：https://www.cnblogs.com/lishanlei/p/10707693.html
+public class Solution {
+    public int NumberOf1Between1AndN_Solution(int n) {
+        int count=0;
+        int i = 1;
+        int cur, low, high;
+        while ((n / i) > 0) {
+            cur = (n / i) % 10;
+            high = n / (i * 10);
+            low = n  - n / i * i;
+            if (cur == 0) {
+                count += high * i;
+            } else if(cur == 1) {
+                count += high * i + low + 1;
+            } else {
+                count += (high + 1) * i;
+            }
+            i *= 10;
+        }
+        return count;
+    }
+}
+
 
 两个链表的第一个公共节点
 题目描述
@@ -995,7 +967,7 @@ public class Solution {
             dp[i] = Math.min(next2, Math.min(next3, next5));
             if (dp[i] == next2)
                 i2++;
-            if (dp[i] == next3)
+            if (dp[i] == next3)  //注意：这里不能使用else if，因为存在next2,next3,next5之间相等的情况
                 i3++;
             if (dp[i] == next5)
                 i5++;

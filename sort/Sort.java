@@ -23,12 +23,12 @@ public class Sort {
     * @Date 2020/4/11 22:22
     **/
     public static void insertSort(int[] arr) {
-        if (arr == null || arr.length == 0) {
-            return;
-        }
-        for (int i = 1; i < arr.length; i++) {
-            for (int j = i - 1; j >= 0 && arr[j] > arr[j+1]; j--)
-                swap(arr, j, j+1);
+        if (arr == null || arr.length == 0) return;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i; j >= 1; j--) {
+                if (arr[j] < arr[j-1])
+                    swap(arr, j, j-1);
+            }
         }
     }
 
@@ -46,27 +46,27 @@ public class Sort {
     }
     private static void sortProcess(int[] arr, int l, int r) {
         if (l == r) return;
-        int mid = l + ((r - l) >> 1);
+        int mid = l + (r - l) / 2;
         sortProcess(arr, l, mid);
         sortProcess(arr, mid + 1, r);
         merge(arr, l, mid, r);
     }
     private static void merge(int[] arr, int l, int mid, int r) {
-        int[] tmp = new int[r - l + 1];
-        int p = l;
-        int q = mid + 1;
-        int i = 0;
-        while (p <= mid && q <= r) {
-            tmp[i++] = (arr[p] < arr[q]) ?  arr[p++] : arr[q++];
+        int[] tmp = new int[arr.length];
+        int i = l;
+        int j = mid + 1;
+        int k = l;
+        while (i <= mid && j <= r) {
+            tmp[k++] = (arr[i] < arr[j]) ? arr[i++] : arr[j++];
         }
-        while (p <= mid) {
-            tmp[i++] = arr[p++];
+        while (i <= mid) {
+            tmp[k++] = arr[i++];
         }
-        while (q <= r) {
-            tmp[i++] = arr[q++];
+        while (j <= r) {
+            tmp[k++] = arr[j++];
         }
         for (i = l; i <= r; i++) {
-            arr[i] = tmp[i-l];
+            arr[i] = tmp[i];
         }
     }
 
@@ -83,28 +83,32 @@ public class Sort {
     }
 
     private static void quickSort(int[] arr, int L, int R) {
-        if (L < R) {
-            int[] index = partition(arr, L, R);
-            quickSort(arr, L, index[0]);
-            quickSort(arr, index[1], R);
-        }
+        if (L >= R) return;
+        int[] index = partition(arr, L, R);
+        int less = index[0];
+        int more = index[1];
+        quickSort(arr, L, less);
+        quickSort(arr, more, R);
     }
 
     private static int[] partition(int[] arr, int L, int R) {
+        int x = new Random().nextInt(R - L + 1);
+        x = arr[L + x];
         int less = L - 1;
         int more = R + 1;
-        Random random = new Random();
-        int x = arr[L + random.nextInt(R - L)];
         while (L < more) {
             if (arr[L] < x) {
                 swap(arr, ++less, L++);
             } else if (arr[L] > x) {
-                swap(arr, L, --more);
+                swap(arr, --more, L);
             } else {
                 L++;
             }
         }
-        return new int[] {less, more};
+        int[] index = new int[2];
+        index[0] = less;
+        index[1] = more;
+        return index;
     }
     /*
      * @Author sunwb
@@ -154,7 +158,7 @@ public class Sort {
     }
 
     /*
-    * @Description 交换数组的两个值, 位运算写法有风险（两数相等时，有一个为0），需要先判断两个值是否相等
+    * @Description 交换数组的两个值, 位运算写法
     * @param arr
     * @param i
     * @param j
@@ -174,7 +178,7 @@ public class Sort {
         for (int i = 0; i < 20; i++) {
             data = GeneratorArray.generateRandomArray(100, 20);
             int[] data1 = Arrays.copyOf(data, data.length);
-            mergeSort(data);
+            quickSort(data);
             heapSort(data1);
             for (int j = 0; j < data.length; ++j) {
                 if (data[j] != data1[j]) {
