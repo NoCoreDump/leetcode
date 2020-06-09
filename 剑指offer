@@ -810,6 +810,7 @@ public class Solution {
 第一个只出现一次的字符
 题目描述
 在一个字符串(0<=字符串长度<=10000，全部由字母组成)中找到第一个只出现一次的字符,并返回它的位置, 如果没有则返回 -1（需要区分大小写）.
+思路：hash表计数法
 public class Solution {
     public int FirstNotRepeatingChar(String str) {
         if (str.length() == 0) return -1;
@@ -973,6 +974,60 @@ public class Solution {
                 i5++;
         }
         return dp[index-1];
+    }
+}
+
+数组中只出现一次的数字
+题目描述
+一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
+//num1,num2分别为长度为1的数组。传出参数
+//将num1[0],num2[0]设置为返回结果
+思路：异或运算可以消除相等的值
+public class Solution {
+    public void FindNumsAppearOnce(int [] array,int num1[] , int num2[]) {
+        if (array == null || array.length == 0) {
+            num1[0] = num2[0] = 0;
+        }
+        int x = array[0];
+        for (int i = 1; i < array.length; i++) {
+            x ^= array[i];
+        }
+        int k = x;
+        int index = 0;
+        //找到异或结果中为1的那一位
+        while ((k & 1) == 0) {
+            k = k >>> 1;
+            index++;
+        }
+        //按照index位划分为0\1两组数据，分别进行异或操作
+        num1[0] = num2[0] = 0;
+        for (int i : array) {
+            if (((i >>> index) & 1) == 0)
+                num1[0] ^= i;
+            else
+                num2[0] ^= i;
+        }
+    }
+}
+变形：在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+思路：每个二进制位求和，如果某个二进制位不能被三整除，那么只出现一次的那个数字在这个二进制位上为1
+class Solution {
+    public int singleNumber(int[] nums) {
+        int[] binarySum = new int[32];
+        for(int i = 0; i< 32; i++){//求每个二进制位的和
+            int sum = 0;
+            for(int num : nums){
+                sum += (num >>i & 1);
+            }
+            binarySum[i] = sum;
+        }
+        int res = 0;
+        for (int i = 0; i< 32; i++){
+            if(binarySum[i]%3!=0){
+                res += 1<<i;
+            }
+        }
+        return res;
     }
 }
 
@@ -1261,6 +1316,100 @@ public class Solution {
             i++;
         }
         return res;
+    }
+}
+
+圆圈中最后剩下的数字
+题目描述：0,1, ... ,n-1这n个数字排成一个圈，从0开始，每次从圈里删除第m个数字，求最后一个数字，不存在，则返回-1。
+思路一：循环链表，复杂度O(mn)
+思路二：数学方法， fn = (fn-1 + m) % n;
+class Node {
+    int val;
+    Node next;
+    public Node(int v) {
+        this.val = v;
+        this.next = null;
+    }
+}
+public class Solution {
+    public int LastRemaining_Solution(int n, int m) {
+        if (n < 1 || m < 1) return -1;
+        Node head = new Node(0);
+        Node p = head;
+        for (int i = 1; i < n; i++) {
+            Node node = new Node(i);
+            p.next = node;
+            p = p.next;
+        }
+        p.next = head;
+        int i = 0;
+        while (n > 1) {
+            if (i == m - 1) {
+                p.next = head.next;
+                head.next = null;
+                head = p.next;
+                i = 0;
+                n--;
+            }
+            i++;
+            p = head;
+            head = head.next;
+        }
+        return p.val;
+    }
+}
+
+public int LastRemaining_Solution(int n, int m) {
+    if (n == 0) /* 特殊输入的处理 */
+        return -1;
+    if (n == 1) /* 递归返回条件 */
+        return 0;
+    return (LastRemaining_Solution(n - 1, m) + m) % n;
+}
+
+扑克牌顺子
+思路：先用boolean数组标记出现的数字，统计0的个数和最小与最大之间缺失的个数，进行比较
+public class Solution {
+    public boolean isContinuous(int [] numbers) {
+        if (numbers == null || numbers.length < 5) return false;
+        boolean[] vis = new boolean[14];
+        int begin;
+        int end;
+        int zeroCnt = 0;
+        for (int n : numbers) {
+            if (n == 0) {
+                zeroCnt++;
+                continue;
+            }
+            if (vis[n]) return false;
+            vis[n] = true;
+        }
+        int i = 1;
+        while (i < 13 && !vis[i]) {
+            i++;
+        }
+        begin = i;
+        i = 13;
+        while (i > begin && !vis[i]) {
+            i--;
+        }
+        end = i;
+        for (i = begin; i <= end; i++) {
+            if (!vis[i]) zeroCnt--;
+        }
+        return (zeroCnt >= 0);
+    }
+}
+
+1～n求和
+题目描述
+求1+2+3+...+n，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+思路：使用&&（短路与）代替if判断
+public class Solution {
+    public int Sum_Solution(int n) {
+        int sum = n;
+        boolean b= (n > 0) && ((sum += Sum_Solution(n - 1)) > 0);
+        return sum;
     }
 }
 
