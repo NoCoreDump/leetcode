@@ -82,6 +82,46 @@ public class Solution {
         return h;
     }
 }
+//迭代法
+public class Solution {
+    public ListNode deleteDuplication(ListNode pHead)
+    {
+        if (pHead == null || pHead.next == null) return pHead;
+        //头结点重复
+        boolean flag = false;
+        if (pHead.val == pHead.next.val) {
+            flag = true;
+        }
+        while (pHead.next!= null && flag) {
+            while (pHead.next != null && pHead.val == pHead.next.val) {
+                pHead = pHead.next;
+            }
+            pHead = pHead.next;
+            if (pHead == null || pHead.next == null) return pHead;
+            if (pHead.val == pHead.next.val) {
+                flag = true;
+            } else {
+                break;
+            }
+        }
+        ListNode pre, h;
+        pre = pHead;
+        h = pre.next;
+        while (h != null && h.next != null) {
+            if (h.val == h.next.val) {
+                while (h.next != null && h.val == h.next.val) {
+                    h = h.next;
+                }
+                pre.next = h.next;
+                h = h.next;
+            } else {
+                pre = h;
+                h = h.next;
+            }
+        }
+        return pHead;
+    }
+}
 
 题目描述：重建二叉树
 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
@@ -1235,6 +1275,59 @@ public class Solution {
             array[i] = arr[i];
             i++;
         }
+    }
+}
+
+数组中重复的数字
+题目描述
+在一个长度为 n 的数组里的所有数字都在 0 到 n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字是重复的，也不知道每个数字重复几次。
+请找出数组中任意一个重复的数字。
+思路：要求时间复杂度 O(N)，空间复杂度 O(1)。因此不能使用排序的方法，也不能使用额外的标记数组。
+对于这种数组元素在 [0, n-1] 范围内的问题，可以将值为 i 的元素调整到第 i 个位置上进行求解。
+public boolean duplicate(int[] nums, int length, int[] duplication) {
+    if (nums == null || length <= 0)
+        return false;
+    for (int i = 0; i < length; i++) {
+        while (nums[i] != i) {
+            if (nums[i] == nums[nums[i]]) {
+                duplication[0] = nums[i];
+                return true;
+            }
+        swap(nums, i, nums[i]);
+        }
+    }
+    return false;
+}
+private void swap(int[] nums, int i, int j) {
+    int t = nums[i];
+    nums[i] = nums[j];
+    nums[j] = t;
+}
+
+构建乘积数组
+题目描述
+给定一个数组A[0,1,...,n-1],请构建一个数组B[0,1,...,n-1],其中B中的元素B[i]=A[0]*A[1]*...*A[i-1]*A[i+1]*...*A[n-1]。不能使用除法。（注意：规定B[0] = A[1] * A[2] * ... * A[n-1]，B[n-1] = A[0] * A[1] * ... * A[n-2];）
+public class Solution {
+    public int[] multiply(int[] A) {
+        if (A == null || A.length == 0) return new int[A.length];
+        int len = A.length;
+        int[] dp1 = new int[len]; //dp1[i] = A[0] * A[1] * ... * A[i]
+        int[] dp2 = new int[len]; //dp2[i] = A[n-1] * A[n-2] * ... * A[i];
+        dp1[0] = A[0];
+        dp2[len-1] = A[len-1];
+        for (int i = 1; i < A.length; i++) {
+            dp1[i] = dp1[i-1] * A[i];
+        }
+        for (int i = len - 2; i >= 0; i--) {
+            dp2[i] = dp2[i+1] * A[i];
+        }
+        int[] B = new int[len];
+        B[0] = dp2[1];
+        B[len-1] = dp1[len-2];
+        for (int i = 1; i < len - 1; i++) {
+            B[i] = dp1[i-1] * dp2[i+1];
+        }
+        return B;
     }
 }
 
