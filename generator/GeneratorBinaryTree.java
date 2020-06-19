@@ -29,28 +29,8 @@ public class GeneratorBinaryTree {
         return node;
     }
 
-    public static ArrayList<ArrayList<Integer>> verticalOrder(TreeNode root) {
-        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
-        if (root == null) return res;
-        ArrayDeque<TreeNode> stack = new ArrayDeque<>();
-        stack.add(root);
-        while (!stack.isEmpty()) {
-            int count = stack.size();
-            ArrayList<Integer> list = new ArrayList<>();
-            while (count -- > 0) {
-                TreeNode node = stack.poll();
-                list.add(node.val);
-                if (node.left != null) stack.add(node.left);
-                if (node.right != null) stack.add(node.right);
-            }
-            res.add(list);
-        }
-        return res;
-    }
     public static void main(String[] args) {
         int[] data = GeneratorArray.generateRandomArray(100, 20);
-        TreeNode root = generateBinaryTree(data);
-        ArrayList<ArrayList<Integer>> res = verticalOrder(root);
-        System.out.println(res.toString());
+
     }
 }
