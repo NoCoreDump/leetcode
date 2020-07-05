@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 /**
  * @program: leetcode
- * @description: 根据数组生成二叉树
+ * @description: 根据数组生成搜索二叉树
  * @author: sunwb
  * @create: 2020-05-02 10:50
  */

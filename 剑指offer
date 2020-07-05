@@ -308,17 +308,18 @@ public class ListNode {
 public class Solution {
     public ListNode ReverseList(ListNode head) {
         if (head == null || head.next == null) return head;
-        ListNode p, q;
-        p = head;
-        q = p.next;
-        head.next = null;
-        while (q != null) {
-            ListNode next = q.next;
+        ListNode p,q, next;
+        p = null;
+        q = head;
+        next = q.next;
+        while (next != null) {
             q.next = p;
             p = q;
             q = next;
+            next = next.next;
         }
-        return p;
+        q.next = p;
+        return q;
     }
 }
 
@@ -529,6 +530,7 @@ public class Solution {
     }
 }
 
+二叉搜索树的后序遍历
 判断序列是否为二叉搜索树的后序遍历
 题目描述
 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
@@ -553,6 +555,44 @@ public class Solution {
         if (index <= 0) return help(sequence, start, end - 1);
         else return help(sequence, start, index - 1) & help(sequence, index, end - 1);
     }
+}
+
+序列化二叉树
+/*
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    String desStr;
+    String Serialize(TreeNode root) {
+        if (root == null) return "#";
+        return root.val + "," + Serialize(root.left) + "," + Serialize(root.right);
+  }
+    TreeNode Deserialize(String str) {
+        desStr = str;
+       int index = desStr.indexOf(",");
+        if (index < 0) {
+            desStr = "";
+            return null;
+        } else {
+            String nodeStr = desStr.substring(0, index);
+            desStr = desStr.substring(index+1);
+            if ("#".equals(nodeStr)) return null;
+            TreeNode node = new TreeNode(Integer.parseInt(nodeStr));
+            node.left = Deserialize(desStr);
+            node.right = Deserialize(desStr);
+            return node;
+        }
+  }
 }
 
 链表倒数第k个节点
